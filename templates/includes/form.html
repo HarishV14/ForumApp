@@ -1,0 +1,26 @@
+{% load widget_tweaks %}
+
+{% for field in form %}
+<div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ field.id_for_label }}">
+        {{ field.label }}
+    </label>
+
+    {% if form.is_bound %}
+    {% if field.errors %}
+        {% render_field field class="border border-red-500 rounded p-2 w-full is-invalid" %}
+    {% for error in field.errors %}
+        <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+    {% endfor %}
+    {% else %}
+        {% render_field field class="border border-green-500 rounded p-2 w-full is-valid" %}
+    {% endif %}
+    {% else %}
+        {% render_field field class="border border-gray-300 rounded p-2 w-full" %}
+    {% endif %}
+
+    {% if field.help_text %}
+    <small class="text-gray-600 text-xs">{{ field.help_text }}</small>
+    {% endif %}
+</div>
+{% endfor %}

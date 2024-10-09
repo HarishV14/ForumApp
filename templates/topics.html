@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ board.name }} - {{ block.super }}
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="inline-block">
+    <a href="{% url 'home' %}" class="text-blue-500 hover:text-blue-700">Boards</a>
+</li>
+<span class="mx-2 text-gray-500">/</span>
+<li class="inline-block text-gray-800">
+    {{ board.name }}
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'new_topic' board.pk %}"
+        class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2 px-4 rounded">
+        <span class="text-xl">+</span> New Topic 
+    </a>
+</div>
+<table class="min-w-full bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden">
+    <thead class="bg-blue-500 text-white">
+        <tr>
+            <th class="py-3 px-5 text-left">Topic</th>
+            <th class="py-3 px-5 text-left">Starter</th>
+            <th class="py-3 px-5 text-left">Replies</th>
+            <th class="py-3 px-5 text-left">Views</th>
+            <th class="py-3 px-5 text-left">Last Update</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for topic in board.topics.all %}
+        <tr class="hover:bg-gray-100">
+            <td class="py-4 px-5 border-b border-gray-300">{{ topic.subject }}</td>
+            <td class="py-4 px-5 border-b border-gray-300">{{ topic.starter.username }}</td>
+            <td class="py-3 px-5 border-b border-gray-300">0</td>
+            <td class="py-3 px-5 border-b border-gray-300">0</td>
+            <td class="py-3 px-5 border-b border-gray-300">{{ topic.last_updated }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
