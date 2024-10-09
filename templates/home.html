@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Boards</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <div class="container mx-auto p-10">
+        <!-- Breadcrumb -->
+        <nav class="mb-4" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2 text-blue-600">
+                <li>
+                    <span class="font-semibold">Boards</span>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Table -->
+        <table class="min-w-full bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-blue-500 text-white">
+                <tr>
+                    <th class="py-3 px-5 text-left">Board</th>
+                    <th class="py-3 px-5 text-left">Posts</th>
+                    <th class="py-3 px-5 text-left">Topics</th>
+                    <th class="py-3 px-5 text-left">Last Post</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for board in boards %}
+                <tr class="hover:bg-gray-100">
+                    <td class="py-4 px-5 border-b border-gray-300">
+                        {{ board.name }}
+                        <small class="text-gray-500">{{ board.description }}</small>
+                    </td>
+                    <td class="py-3 px-5 border-b border-gray-300">0</td>
+                    <td class="py-3 px-5 border-b border-gray-300">0</td>
+                    <td class="py-3 px-5 border-b border-gray-300"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
