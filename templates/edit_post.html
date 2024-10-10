@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ topic.subject }}{% endblock %}
+{% load gravatar %}
+{% block breadcrumb %}
+<li class="inline-block">
+    <a href="{% url 'home' %}" class="text-blue-500 hover:text-blue-700">Boards</a>
+</li>
+<span class="mx-2 text-gray-500">/</span>
+<li class="inline-block">
+    <a href="{% url 'board_topics' post.topic.board.pk %}" class="text-blue-500 hover:text-blue-700">{{ post.topic.board.name }}</a>
+</li>
+<span class="mx-2 text-gray-500">/</span>
+<li class="inline-block">
+    <a href="{% url 'topic_posts' post.topic.board.pk post.topic.pk %}" class="text-blue-500 hover:text-blue-700">{{ post.topic.subject }}</a>
+  
+</li>
+<span class="mx-2 text-gray-500">/</span>
+<li class="inline-block">
+    Edit post
+</li>
+{% endblock %}
+
+{% block content %}
+<form method="post" class="mb-4" novalidate>
+    {% csrf_token %}
+    {% include 'includes/form.html' %}
+    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Save
+        changes</button>
+    <a href="{% url 'topic_posts' post.topic.board.pk post.topic.pk %}"
+        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded inline-block"
+        role="button">Cancel</a>
+</form>
+{% endblock %}

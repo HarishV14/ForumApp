@@ -1,0 +1,37 @@
+{% if is_paginated %}
+  <nav aria-label="Post pagination" class="mb-4 mt-4">
+    <ul class="flex justify-center space-x-2">
+      {% if page_obj.has_previous %}
+        <li>
+          <a class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        </li>
+      {% else %}
+        <li>
+          <span class="px-4 py-2 text-gray-400 bg-gray-200 rounded cursor-not-allowed">Previous</span>
+        </li>
+      {% endif %}
+
+      {% for page_num in paginator.page_range %}
+        {% if page_obj.number == page_num %}
+          <li>
+            <span class="px-4 py-2 text-white bg-blue-600 rounded">{{ page_num }}<span class="sr-only">(current)</span></span>
+          </li>
+        {% else %}
+          <li>
+            <a class="px-4 py-2 text-blue-500 rounded hover:bg-blue-100" href="?page={{ page_num }}">{{ page_num }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <li>
+          <a class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600" href="?page={{ page_obj.next_page_number }}">Next</a>
+        </li>
+      {% else %}
+        <li>
+          <span class="px-4 py-2 text-gray-400 bg-gray-200 rounded cursor-not-allowed">Next</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}
