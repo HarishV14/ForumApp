@@ -1,0 +1,26 @@
+{% extends 'base_accounts.html' %}
+
+{% block title %}Log in to Django Boards{% endblock %}
+
+{% block content %}
+<div class="flex justify-center">
+    <div class="max-w-md w-full">
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h3 class="text-lg font-semibold mb-4">Log in</h3>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% include 'includes/form.html' %}
+                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none">Login</button>
+            </form>
+        </div>
+        <div class="text-center text-gray-600 mt-4">
+            New to Django Boards? <a href="{% url 'signup' %}" class="text-blue-500 hover:underline">Sign up</a>
+        </div>
+        <div class="text-center py-2">
+            <small>
+                <a href="{% url 'password_reset'%}" class="text-blue-500 hover:underline">Forgot your password?</a>
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %}

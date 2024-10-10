@@ -1,10 +1,10 @@
 from django.urls import reverse
 from django.test import TestCase
 from django.urls import resolve
-from .views import home, board_topics,new_topic
+from ..views import home, board_topics,new_topic
 from django.contrib.auth.models import User
-from .models import Board,Topic,Post
-from .forms import NewTopicForm
+from ..models import Board,Topic,Post
+from ..forms import NewTopicForm
 
 class HomeTests(TestCase):
     def setUp(self):

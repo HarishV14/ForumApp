@@ -6,18 +6,80 @@
     <meta charset="utf-8">
     <title>{% block title %}Django Boards{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% block stylesheet %}{% endblock %}
 </head>
 
-<body class="bg-gray-100 min-h-screen flex justify-center">
-    <div class="container max-w-4xl">
-        <ol class="flex space-x-2 text-gray-600 my-4 bg-gray-300 rounded-lg p-4">
-            {% block breadcrumb %}
-            {% endblock %}
-        </ol>
+<body class="bg-gray-100 min-h-screen">
+    <!-- {% if show_navbar %} -->
+    
+    <!-- {% endif %} -->
+
+    {% block body %}
+    <nav class="bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="{% url 'home' %}" class="text-white text-lg font-semibold">Django Boards</a>
+                <div class="md:hidden">
+                    <button type="button" class="text-gray-400 hover:text-white focus:outline-none"
+                        aria-label="Toggle menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="hidden md:flex md:items-center space-x-6">
+                    {% if user.is_authenticated %}
+                    <div class="relative">
+                        <button id="userMenu" class="text-white hover:text-gray-300 focus:outline-none flex items-center">
+                            {{ user.username }}
+                            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                                </path>
+                            </svg>
+                        </button>
+                        <div id="dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
+                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">My account</a>
+                            <a href="{% url 'password_change' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Change password</a>
+                            <div class="border-t border-gray-200"></div>
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left">Log out</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="space-x-2">
+                        <a href="{% url 'login' %}" class="text-white border border-gray-400 hover:bg-gray-600 px-4 py-2 rounded-md">Log
+                            in</a>
+                        <a href="{% url 'signup' %}"
+                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Sign up</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="flex justify-center">
+        <div class="container max-w-4xl">
+            <ol class="flex space-x-2 text-gray-600 my-4 bg-gray-300 rounded-lg p-4">
+                {% block breadcrumb %}
+                {% endblock %}
+            </ol>
             {% block content %}
             {% endblock %}
+            {% endblock body %}
+        </div>
     </div>
+    <script>
+        // Dropdown functionality (tailored for Tailwind)
+        document.getElementById('userMenu').addEventListener('click', function () {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.classList.toggle('hidden');
+        });
+    </script>
 </body>
-
 
 </html>
