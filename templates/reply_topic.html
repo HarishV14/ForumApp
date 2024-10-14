@@ -1,18 +1,32 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ topic.subject }}{% endblock %}
-{% load gravatar %}
+{% load static %}
+
+{% block title %}Post a reply{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock %}
+
+{% block javascript %}
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+    var simplemde = new SimpleMDE();
+</script>
+
+{% endblock %}
+
 {% block breadcrumb %}
 <li class="inline-block">
     <a href="{% url 'home' %}" class="text-blue-500 hover:text-blue-700">Boards</a>
 </li>
 <span class="mx-2 text-gray-500">/</span>
 <li class="inline-block">
-    <a href="{% url 'board_topics' topic.board.pk %}" class="text-blue-500 hover:text-blue-700">{{ topic.board.name}}</a>
+    <a href="{% url 'board_topics' topic.board.pk %}" class="text-blue-500 hover:text-blue-700">{{topic.board.name}}</a>
 </li>
 <span class="mx-2 text-gray-500">/</span>
 <li class="inline-block">
-    <a href="{% url 'topic_posts' topic.board.pk topic.pk %}" class="text-blue-500 hover:text-blue-700">{{ topic.subject}}</a>
+    <a href="{% url 'topic_posts' topic.board.pk topic.pk %}" class="text-blue-500 hover:text-blue-700">{{topic.subject}}</a>
 </li>
 <span class="mx-2 text-gray-500">/</span>
 <li class="inline-block">
@@ -22,14 +36,14 @@
 
 {% block content %}
 
-<form method="post" class="mb-4">
+
+<form method="post" class="mb-4" novalidate>
     {% csrf_token %}
     {% include 'includes/form.html' %}
-    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Post a
-        reply</button>
+    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4">Post a reply</button>
 </form>
 
-{% for post in topic.posts.all %}
+{% for post in topic.get_last_ten_posts %}
 <div class="bg-white shadow-md rounded-lg mb-4">
     <div class="p-4">
         <div class="flex justify-between mb-3">

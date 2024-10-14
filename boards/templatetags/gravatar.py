@@ -1,12 +1,19 @@
 import hashlib
 from urllib.parse import urlencode
+
 from django import template
+from django.conf import settings
 
 register = template.Library()
 
+
 @register.filter
-def gravatar(user, size=50):
-    """Returns a Gravatar URL for the given user."""
-    email_hash = hashlib.md5(user.email.lower().encode('utf-8')).hexdigest()
-    params = urlencode({'d': 'mm', 's': str(size)})
-    return f"https://www.gravatar.com/avatar/{email_hash}?{params}"
+def gravatar(user):
+    email = user.email.lower().encode('utf-8')
+    default = 'mm'
+    size = 256
+    url = 'https://www.gravatar.com/avatar/{md5}?{params}'.format(
+        md5=hashlib.md5(email).hexdigest(),
+        params=urlencode({'d': default, 's': str(size)})
+    )
+    return url

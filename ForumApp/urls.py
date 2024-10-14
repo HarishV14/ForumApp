@@ -20,6 +20,9 @@ from django.urls import path
 from boards import views
 from accounts import views as accounts_views
 from django.contrib.auth import views as auth_views
+from accounts import views as accounts_views
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('',views.BoardListView.as_view(),name="home"),
@@ -34,6 +37,7 @@ urlpatterns = [
     path('password_change/',auth_views.PasswordChangeView.as_view(),name='password_change'),
     path('password_change/done/',auth_views.PasswordChangeDoneView.as_view(),name='password_change_done'),
     
+    path('settings/accounts/',accounts_views.UserUpdateView.as_view(),name="my_account"),
     path('boards/<int:pk>',views.TopicListView.as_view(),name="board_topics"),
     path('boards/<int:pk>/new',views.new_topic,name="new_topic"),
     path('boards/<int:pk>/topics/<int:topic_pk>',views.PostListView.as_view(),name="topic_posts"),
@@ -41,3 +45,5 @@ urlpatterns = [
     path('boards/<int:pk>/topics/<int:topic_pk>/posts/<int:post_pk>/edit/', views.PostUpdateView.as_view(), name='edit_post'),
     path("admin/", admin.site.urls),
 ]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

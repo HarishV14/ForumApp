@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block title %}
 {{ board.name }} - {{ block.super }}
@@ -33,12 +34,29 @@
     </thead>
     <tbody>
         {% for topic in topics %}
+        {% url 'topic_posts' board.pk topic.pk as topic_url %}
         <tr class="hover:bg-gray-100">
-            <td class="py-4 px-5 border-b border-gray-300"><a href="{%url 'topic_posts' board.pk topic.pk%}"> {{topic.subject}}</a> </td>
+            <td class="py-4 px-5 border-b border-gray-300">
+                <p class="mb-1">
+                    <a href="{{ topic_url }}" class="text-blue-600 hover:text-blue-800 font-semibold">{{ topic.subject }}</a>
+                </p>
+                <small class="text-gray-500">
+                    Pages:
+                    {% for i in topic.get_page_range %}
+                        <a href="{{ topic_url }}?page={{ i }}" class="text-blue-500 hover:text-blue-700">{{ i }}</a>
+                    {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    {% if topic.has_many_pages %}
+                    ... <a href="{{ topic_url }}?page={{ topic.get_page_count }}" class="text-blue-500 hover:text-blue-700">Last
+                        Page</a>
+                    {% endif %}
+                </small>
+            </td>
+
             <td class="py-4 px-5 border-b border-gray-300">{{ topic.starter.username }}</td>
             <td class="py-3 px-5 border-b border-gray-300">{{ topic.replies }}</td>
             <td class="py-3 px-5 border-b border-gray-300">{{ topic.views }}</td>
-            <td class="py-3 px-5 border-b border-gray-300">{{ topic.last_updated }}</td>
+            <td class="py-3 px-5 border-b border-gray-300">{{ topic.last_updated|naturaltime }}</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}My account{% endblock %}
+
+{% block breadcrumb %}
+<li class="inline-block">
+    <a href="{% url 'home' %}" class="text-blue-500 hover:text-blue-700">Boards</a>
+</li>
+<span class="mx-2 text-gray-500">/</span>
+<li class="inline-block">My account</li>
+{% endblock %}
+
+{% block content %}
+<div class="flex justify-center">
+    <div class="w-full max-w-lg">
+        <form method="post" novalidate class="space-y-6">
+            {% csrf_token %}
+            {% include 'includes/form.html' %}
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Save
+                changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

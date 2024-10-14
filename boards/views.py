@@ -1,4 +1,5 @@
 from django.shortcuts import render,get_object_or_404,redirect
+from django.urls import reverse
 from .forms import NewTopicForm,PostForm
 from django.http import HttpResponse
 from .models import Board,Post,Topic
@@ -10,18 +11,20 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+#Function based view 
 def home(request):
     boards = Board.objects.all()
     return render(request, 'home.html', {'boards': boards})
 
+# Class based view
 class BoardListView(ListView):
     model = Board
     context_object_name = 'boards'
     template_name = 'home.html'
-    
+ 
+ #Function based View 
 def board_topics(request, pk):
     board = get_object_or_404(Board, pk=pk)
-    # topics = board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
     queryset = board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
     page = request.GET.get('page', 1)
 
@@ -39,6 +42,7 @@ def board_topics(request, pk):
 
     return render(request, 'topics.html', {'board': board, 'topics': topics})
 
+# class based view
 class TopicListView(ListView):
     model = Topic
     context_object_name = 'topics'
@@ -84,9 +88,14 @@ class PostListView(ListView):
     template_name = 'topic_posts.html'
     paginate_by = 2
     
+    # it provide additional context data
     def get_context_data(self, **kwargs):
-        self.topic.views += 1
-        self.topic.save()
+        session_key = 'viewed_topic_{}'.format(self.topic.pk)
+        if not self.request.session.get(session_key, False):
+            self.topic.views += 1
+            self.topic.save()
+            self.request.session[session_key] = True
+        
         kwargs['topic'] = self.topic
         return super().get_context_data(**kwargs)
 
@@ -95,11 +104,11 @@ class PostListView(ListView):
         queryset = self.topic.posts.order_by('created_at')
         return queryset
 
-def topic_posts(request, pk, topic_pk):
-    topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
-    topic.views += 1
-    topic.save()
-    return render(request, 'topic_posts.html', {'topic': topic})
+# def topic_posts(request, pk, topic_pk):
+#     topic = get_object_or_40  4(Topic, board__pk=pk, pk=topic_pk)
+#     topic.views += 1
+#     topic.save()
+#     return render(request, 'topic_posts.html', {'topic': topic})
 
 @login_required
 def reply_topic(request, pk, topic_pk):
@@ -111,7 +120,17 @@ def reply_topic(request, pk, topic_pk):
             post.topic = topic
             post.created_by = request.user
             post.save()
-            return redirect('topic_posts', pk=pk, topic_pk=topic_pk)
+            topic.last_updated = timezone.now()  
+            topic.save()
+            topic_url = reverse('topic_posts', kwargs={'pk': pk, 'topic_pk': topic_pk})
+            # this is to mention the page number for pointing the page
+            topic_post_url = '{url}?page={page}#{id}'.format(
+                url=topic_url,
+                id=post.pk,
+                page=topic.get_page_count()
+            )
+            return redirect(topic_post_url)
+
     else:
         form = PostForm()
     return render(request, 'reply_topic.html', {'topic': topic, 'form': form})
